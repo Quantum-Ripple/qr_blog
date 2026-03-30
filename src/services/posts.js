@@ -10,12 +10,25 @@ import {
   orderBy,
   serverTimestamp,
 } from "firebase/firestore"
+import { getAuth } from "firebase/auth"
 import { db } from "../firebase"
 
+const auth = getAuth()
 const postsCollection = collection(db, "posts")
 
+const requireUser = () => {
+  const user = auth.currentUser
+  if (!user) {
+    throw new Error("You must be signed in.")
+  }
+  return user
+}
+
 export const createDraftPost = async () => {
+  const user = requireUser()
+
   const docRef = await addDoc(postsCollection, {
+    authorId: user.uid,
     title: "",
     content: "",
     status: "draft",
@@ -29,6 +42,8 @@ export const createDraftPost = async () => {
 }
 
 export const updatePost = async (postId, data) => {
+  requireUser()
+
   const postRef = doc(db, "posts", postId)
   await updateDoc(postRef, {
     ...data,
@@ -37,6 +52,8 @@ export const updatePost = async (postId, data) => {
 }
 
 export const getPostById = async (postId) => {
+  requireUser()
+
   const postRef = doc(db, "posts", postId)
   const snapshot = await getDoc(postRef)
 
@@ -51,6 +68,8 @@ export const getPostById = async (postId) => {
 }
 
 export const publishPost = async (postId, data) => {
+  requireUser()
+
   const postRef = doc(db, "posts", postId)
   await updateDoc(postRef, {
     ...data,
@@ -61,6 +80,8 @@ export const publishPost = async (postId, data) => {
 }
 
 export const archivePost = async (postId) => {
+  requireUser()
+
   const postRef = doc(db, "posts", postId)
   await updateDoc(postRef, {
     status: "archived",
@@ -68,40 +89,63 @@ export const archivePost = async (postId) => {
   })
 }
 
-// New function to fetch all drafts
 export const getDraftPosts = async () => {
-  const q = query(postsCollection, where("status", "==", "draft"))
+  const user = requireUser()
+
+  const q = query(
+    postsCollection,
+    where("authorId", "==", user.uid),
+    where("status", "==", "draft"),
+    orderBy("updatedAt", "desc")
+  )
+
   const querySnapshot = await getDocs(q)
-  
+
   return querySnapshot.docs.map(doc => ({
     id: doc.id,
-    ...doc.data()
+    ...doc.data(),
   }))
 }
 
 export const getPublishedPosts = async () => {
+  const user = requireUser()
+
   const q = query(
-    postsCollection, 
+    postsCollection,
+    where("authorId", "==", user.uid),
     where("status", "==", "published"),
     orderBy("publishedAt", "desc")
   )
+
   const querySnapshot = await getDocs(q)
-  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+
+  return querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+  }))
 }
 
-
-
 export const getArchivedPosts = async () => {
+  const user = requireUser()
+
   const q = query(
     postsCollection,
+    where("authorId", "==", user.uid),
     where("status", "==", "archived"),
     orderBy("updatedAt", "desc")
   )
+
   const querySnapshot = await getDocs(q)
-  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+
+  return querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+  }))
 }
 
 export const restorePostToDraft = async (postId) => {
+  requireUser()
+
   const postRef = doc(db, "posts", postId)
   await updateDoc(postRef, {
     status: "draft",
@@ -110,11 +154,53 @@ export const restorePostToDraft = async (postId) => {
 }
 
 export const getAllPosts = async () => {
-  const q = query(postsCollection, orderBy("updatedAt", "desc"))
+  const user = requireUser()
+
+  const q = query(
+    postsCollection,
+    where("authorId", "==", user.uid),
+    orderBy("updatedAt", "desc")
+  )
+
   const querySnapshot = await getDocs(q)
 
   return querySnapshot.docs.map(doc => ({
     id: doc.id,
-    ...doc.data()
+    ...doc.data(),
   }))
+}
+
+export const getPublicPublishedPosts = async () => {
+  const q = query(
+    postsCollection,
+    where("status", "==", "published"),
+    orderBy("publishedAt", "desc")
+  )
+
+  const querySnapshot = await getDocs(q)
+
+  return querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+  }))
+}
+
+export const getPublicPostById = async (postId) => {
+  const postRef = doc(db, "posts", postId)
+  const snapshot = await getDoc(postRef)
+
+  if (!snapshot.exists()) {
+    throw new Error("Post not found")
+  }
+
+  const post = {
+    id: snapshot.id,
+    ...snapshot.data(),
+  }
+
+  if (post.status !== "published") {
+    throw new Error("Post not available")
+  }
+
+  return post
 }

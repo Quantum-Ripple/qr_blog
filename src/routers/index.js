@@ -7,6 +7,8 @@ import Archive from "../views/Archive.vue"
 import PublishView from "../views/PublishView.vue"
 import WriteBlog from "../views/WriteBlogView.vue"
 import LoginView from "../views/LoginView.vue"
+import BlogHomeView from '../views/BlogHomeView.vue'
+import BlogPostView from '../views/BlogPostView.vue'
 
 import { auth } from "../firebase"
 import { onAuthStateChanged } from "firebase/auth"
@@ -14,40 +16,86 @@ import { onAuthStateChanged } from "firebase/auth"
 const routes = [
   {
     path: "/",
-    name: "Home",
+    name: "BlogHomeView",
+    component: BlogHomeView,
+    meta: { publicReader: true }
+  },
+  {
+    path: "/posts/:id",
+    name: "BlogPostView",
+    component: BlogPostView,
+    meta: { publicReader: true }
+  },
+  {
+    path: "/blog",
+    redirect: { name: "BlogHomeView" }
+  },
+  {
+    path: "/blog/posts/:id",
+    redirect: to => ({
+      name: "BlogPostView",
+      params: { id: to.params.id }
+    })
+  },
+  {
+    path: "/admin",
+    name: "AdminHome",
     component: HomeView,
     meta: { requiresAuth: true }
   },
   {
-    path: "/drafts",
+    path: "/admin/drafts",
     name: "DraftView",
     component: DraftView,
     meta: { requiresAuth: true }
   },
   {
-    path: "/published",
+    path: "/admin/published",
     name: "PublishView",
     component: PublishView,
     meta: { requiresAuth: true }
   },
   {
-    path: "/archives",
+    path: "/admin/archives",
     name: "Archive",
     component: Archive,
     meta: { requiresAuth: true }
   },
   {
-    path: "/edit",
+    path: "/admin/edit",
     name: "WriteBlog",
     component: WriteBlog,
     meta: { requiresAuth: true }
   },
   {
-    path: "/login",
-    name: "LoginView",
+    path: "/admin/login",
+    name: "AdminLogin",
     component: LoginView,
     meta: { requiresGuest: true }
-  }
+  },
+  {
+    path: "/login",
+    redirect: { name: "AdminLogin" }
+  },
+  {
+    path: "/drafts",
+    redirect: { name: "DraftView" }
+  },
+  {
+    path: "/published",
+    redirect: { name: "PublishView" }
+  },
+  {
+    path: "/archives",
+    redirect: { name: "Archive" }
+  },
+  {
+    path: "/edit",
+    redirect: to => ({
+      name: "WriteBlog",
+      query: to.query
+    })
+  },
 ]
 
 const router = createRouter({
@@ -75,9 +123,12 @@ router.beforeEach(async (to, from, next) => {
   const user = await getCurrentUser()
 
   if (to.meta.requiresAuth && !user) {
-    next("/login")
+    next({
+      name: "AdminLogin",
+      query: { redirect: to.fullPath }
+    })
   } else if (to.meta.requiresGuest && user) {
-    next("/")
+    next({ name: "AdminHome" })
   } else {
     next()
   }

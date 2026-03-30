@@ -19,7 +19,7 @@ import AppBar from './components/AppBar.vue'
 
 const route = useRoute()
 
-const showAppBar = computed(() => !route.meta.requiresGuest)
+const showAppBar = computed(() => !route.meta.requiresGuest && !route.meta.publicReader)
 </script>
 
 <style>

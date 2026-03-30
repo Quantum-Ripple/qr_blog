@@ -14,7 +14,7 @@ const isLoggingOut = ref(false)
 let unsubscribeAuth = null
 
 const navLinks = [
-  { name: "Home", to: "/" },
+  { name: "Home", to: { name: "AdminHome" } },
   { name: "Write", to: { name: "WriteBlog" } },
   { name: "Drafts", to: { name: "DraftView" } },
   { name: "Published", to: { name: "PublishView" } },
@@ -54,7 +54,7 @@ const handleLogout = async () => {
   try {
     await logoutAdmin()
     closeMenus()
-    router.push("/login")
+    router.push({ name: "AdminLogin" })
   } catch (error) {
     console.error(error)
   } finally {

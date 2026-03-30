@@ -124,7 +124,7 @@ const handleSaveDraft = async () => {
     if (!postId.value) {
       postId.value = await createDraftPost()
       await router.replace({
-        path: "/edit",
+        name: "WriteBlog",
         query: { id: postId.value },
       })
     }
@@ -168,7 +168,7 @@ const handlePublish = async () => {
     if (!postId.value) {
       postId.value = await createDraftPost()
       await router.replace({
-        path: "/edit",
+        name: "WriteBlog",
         query: { id: postId.value },
       })
     }
@@ -178,7 +178,7 @@ const handlePublish = async () => {
     saveStatus.value = "saved"
     toast.success("Post published successfully.")
 
-    router.push("/published")
+    router.push({ name: "PublishView" })
   } catch (error) {
     console.error("Publish failed:", error)
     saveStatus.value = "error"

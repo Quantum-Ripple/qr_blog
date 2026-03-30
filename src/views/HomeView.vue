@@ -5,7 +5,7 @@
       <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         
         <router-link
-          to="/edit"
+          :to="{ name: 'WriteBlog' }"
           class="inline-flex items-center justify-center rounded-xl bg-gray-900 text-white px-5 py-3 font-semibold hover:bg-black transition"
         >
           New Post
@@ -51,7 +51,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <router-link
-            to="/edit"
+            :to="{ name: 'WriteBlog' }"
             class="rounded-2xl border border-gray-200 p-5 hover:bg-gray-50 transition"
           >
             <h3 class="font-semibold text-gray-900">Write New Post</h3>
@@ -59,7 +59,7 @@
           </router-link>
 
           <router-link
-            to="/drafts"
+            :to="{ name: 'DraftView' }"
             class="rounded-2xl border border-gray-200 p-5 hover:bg-gray-50 transition"
           >
             <h3 class="font-semibold text-gray-900">Drafts</h3>
@@ -67,7 +67,7 @@
           </router-link>
 
           <router-link
-            to="/published"
+            :to="{ name: 'PublishView' }"
             class="rounded-2xl border border-gray-200 p-5 hover:bg-gray-50 transition"
           >
             <h3 class="font-semibold text-gray-900">Published</h3>
@@ -75,7 +75,7 @@
           </router-link>
 
           <router-link
-            to="/archives"
+            :to="{ name: 'Archive' }"
             class="rounded-2xl border border-gray-200 p-5 hover:bg-gray-50 transition"
           >
             <h3 class="font-semibold text-gray-900">Archived</h3>
@@ -95,7 +95,7 @@
           
 
           <router-link
-            to="/edit"
+            :to="{ name: 'WriteBlog' }"
             class="inline-flex items-center justify-center rounded-xl bg-gray-900 text-white px-5 py-3 font-semibold hover:bg-black transition"
           >
             Create your first post
@@ -140,7 +140,7 @@
 
               <div class="pt-2">
                 <router-link
-                  :to="`/edit?id=${post.id}`"
+                  :to="{ name: 'WriteBlog', query: { id: post.id } }"
                   class="inline-flex items-center justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition"
                 >
                   Open Post

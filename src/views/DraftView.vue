@@ -5,7 +5,7 @@
         
 
         <router-link
-          to="/edit"
+          :to="{ name: 'WriteBlog' }"
           class="inline-flex items-center justify-center rounded-xl bg-gray-900 text-white px-5 py-3 font-semibold hover:bg-black transition"
         >
           New Post
@@ -24,7 +24,7 @@
         
 
         <router-link
-          to="/edit"
+          :to="{ name: 'WriteBlog' }"
           class="inline-flex items-center justify-center rounded-xl bg-gray-900 text-white px-5 py-3 font-semibold hover:bg-black transition"
         >
           Write your first post
@@ -66,7 +66,7 @@
 
             <div class="pt-2">
               <router-link
-                :to="`/edit?id=${draft.id}`"
+                :to="{ name: 'WriteBlog', query: { id: draft.id } }"
                 class="inline-flex items-center justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition"
               >
                 Continue Writing

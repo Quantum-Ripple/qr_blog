@@ -53,9 +53,10 @@
 
 <script setup>
 import { ref } from "vue"
-import { useRouter } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import { loginAdmin } from "../services/auth"
 
+const route = useRoute()
 const router = useRouter()
 
 const email = ref("")
@@ -69,7 +70,9 @@ const handleLogin = async () => {
 
   try {
     await loginAdmin(email.value, password.value)
-    router.push("/")
+    const redirectTarget =
+      typeof route.query.redirect === "string" ? route.query.redirect : { name: "AdminHome" }
+    router.push(redirectTarget)
   } catch (error) {
     switch (error.code) {
       case "auth/invalid-email":

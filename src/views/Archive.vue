@@ -5,7 +5,7 @@
 
 
         <router-link
-          to="/edit"
+          :to="{ name: 'WriteBlog' }"
           class="inline-flex items-center justify-center rounded-xl bg-gray-900 text-white px-5 py-3 font-semibold hover:bg-black transition"
         >
           New Post
@@ -26,7 +26,7 @@
         <h2 class="text-xl font-semibold text-gray-800">No archived posts</h2>
        
         <router-link
-          to="/published"
+          :to="{ name: 'PublishView' }"
           class="inline-flex items-center justify-center rounded-xl bg-gray-900 text-white px-5 py-3 font-semibold hover:bg-black transition"
         >
           View Published Posts
@@ -70,7 +70,7 @@
 
             <div class="flex flex-wrap gap-3 pt-2">
               <router-link
-                :to="`/edit?id=${post.id}`"
+                :to="{ name: 'WriteBlog', query: { id: post.id } }"
                 class="inline-flex items-center justify-center rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition"
               >
                 View
