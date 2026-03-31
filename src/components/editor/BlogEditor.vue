@@ -15,7 +15,7 @@ import { watch } from "vue"
 import { EditorContent, useEditor } from "@tiptap/vue-3"
 import StarterKit from "@tiptap/starter-kit"
 import Image from "@tiptap/extension-image"
-import EditorToolbar from "./EditorToolbar.vue"
+import EditorToolbar from "./EditorToolBar.vue"
 
 const props = defineProps({
   modelValue: {
