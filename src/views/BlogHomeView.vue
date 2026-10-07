@@ -144,6 +144,7 @@
         class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between text-sm text-[#6d6258]"
       >
         <p>© 2026 Wild & Free. All rights reserved.</p>
+        <p><a href="mailto:hello@quantumripple.co.ke" class="hover:underline">hello@quantumripple.co.ke</a></p>
         <p class="italic">Written for thoughtful readers.</p>
       </div>
     </footer>
